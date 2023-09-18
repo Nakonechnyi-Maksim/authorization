@@ -1,8 +1,14 @@
 const userService = require("../service/user-service");
+const { validationResult } = require("express-validator");
+const ApiError = require("../exceptions/api-erros");
 
 class UserController {
   async registration(req, res, next) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest("Ошибка при валидации",errors.array()));
+      }
       const { email, password } = req.body;
       const userData = await userService.registration(email, password);
       res.cookie("refreshToken", userData.refreshToken, {
@@ -11,19 +17,19 @@ class UserController {
       });
       return res.json(userData);
     } catch (e) {
-      console.log("Ашибочка", e);
+      next(e);
     }
   }
   async login(req, res, next) {
     try {
     } catch (e) {
-      console.log("Ашибочка", e);
+      next(e);
     }
   }
   async logout(req, res, next) {
     try {
     } catch (e) {
-      console.log("Ашибочка", e);
+      next(e);
     }
   }
   async activate(req, res, next) {
@@ -32,19 +38,19 @@ class UserController {
       await userService.activate(activationLink);
       return res.redirect(process.env.CLIENT_URL);
     } catch (e) {
-      console.log("Ашибочка", e);
+      next(e);
     }
   }
   async refresh(req, res, next) {
     try {
     } catch (e) {
-      console.log("Ашибочка", e);
+      next(e);
     }
   }
   async getUsers(req, res, next) {
     try {
     } catch (e) {
-      console.log("Ашибочка", e);
+      next(e);
     }
   }
 }
