@@ -8,7 +8,7 @@ const UserDto = require("../dtos/user-dto");
 
 class UserService {
   async registration(email, password) {
-    const candidate = await userModel.findOne({ email });
+    const candidate = await userModel.findOne({ where: { email } });
     if (candidate) {
       throw new Error(
         `Пользователь с почтовым адресом ${email} уже существует`
@@ -19,7 +19,7 @@ class UserService {
     const user = await userModel.create({
       email,
       password: hashPassword,
-      activationLink,
+      activationLink: activationLink,
     });
     await mailService.sendActivationMail(
       email,
@@ -30,6 +30,14 @@ class UserService {
     await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return { ...tokens, user: userDto };
+  }
+  async activate(activationLink) {
+    const user = await userModel.findOne({ where: { activationLink } });
+    if (!user) {
+      throw new Error("Неккоректная ссылка емае");
+    }
+    user.isActivated = true;
+    await user.save();
   }
 }
 

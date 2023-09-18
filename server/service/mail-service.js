@@ -5,7 +5,7 @@ class MailService {
     this.transporter = nodeMailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: false,
+      secure: true,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -17,7 +17,7 @@ class MailService {
     await this.transporter.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: "Активация аккаунта на" + process.env.API_URL,
+      subject: "Активация аккаунта на " + process.env.API_URL,
       text: "",
       html: `
         <div>
