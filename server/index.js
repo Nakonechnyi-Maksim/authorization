@@ -5,13 +5,15 @@ const cookie = require("cookie-parser");
 const { error } = require("console");
 const sequelize = require("./db");
 const cookieParser = require("cookie-parser");
+const router = require("./router/index");
 
 const PORT = process.env.PORT;
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors);
+app.use(cors());
+app.use("/api", router);
 
 const start = async () => {
   try {
